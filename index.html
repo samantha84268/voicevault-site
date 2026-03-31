@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>VoiceVault — Save the voices you never want to forget</title>
+  <meta name="description" content="One click saves every voicemail from Mom, Dad, and the people you love. Organized by person. Transcribed. Yours forever."/>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --slate: #2C3E50;
+      --slate-dark: #1E2D3D;
+      --slate-mid: #3D5166;
+      --coral: #E8856A;
+      --coral-light: #F0A898;
+      --off-white: #FAFAF8;
+      --text: #FAFAF8;
+      --dim: rgba(250,250,248,0.55);
+      --rule: rgba(255,255,255,0.08);
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif; background: var(--slate); color: var(--text); line-height: 1.7; -webkit-font-smoothing: antialiased; }
+
+    /* NAV */
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 16px 40px; display: flex; justify-content: space-between; align-items: center; background: rgba(30,45,61,0.85); backdrop-filter: blur(20px); border-bottom: 1px solid var(--rule); }
+    nav .logo { font-size: 18px; font-weight: 800; color: var(--off-white); letter-spacing: -0.5px; }
+    nav .logo span { color: var(--coral); }
+    nav .nav-links { display: flex; gap: 32px; align-items: center; }
+    nav .nav-links a { color: var(--dim); text-decoration: none; font-size: 14px; font-weight: 500; transition: color 0.2s; }
+    nav .nav-links a:hover { color: var(--off-white); }
+    nav .cta-btn { background: var(--coral); color: #fff; padding: 8px 20px; border-radius: 8px; font-size: 14px; font-weight: 700; text-decoration: none; transition: opacity 0.2s; }
+    nav .cta-btn:hover { opacity: 0.9; }
+
+    /* HERO */
+    .hero { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 120px 40px 80px; position: relative; overflow: hidden; }
+    .hero::before { content: ''; position: absolute; top: -20%; left: 50%; transform: translateX(-50%); width: 800px; height: 800px; background: radial-gradient(circle, rgba(232,133,106,0.08) 0%, transparent 70%); pointer-events: none; }
+    .hero-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(232,133,106,0.1); border: 1px solid rgba(232,133,106,0.2); color: var(--coral); padding: 6px 16px; border-radius: 20px; font-size: 12px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 32px; }
+    .hero h1 { font-size: clamp(40px, 6vw, 72px); font-weight: 800; letter-spacing: -3px; line-height: 1.05; max-width: 800px; margin-bottom: 24px; }
+    .hero h1 .coral { color: var(--coral); }
+    .hero .sub { font-size: 20px; color: var(--dim); max-width: 540px; margin-bottom: 40px; line-height: 1.6; }
+    .hero .buttons { display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; }
+    .btn-primary { background: var(--coral); color: #fff; padding: 16px 36px; border-radius: 12px; font-size: 17px; font-weight: 700; text-decoration: none; transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px; }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(232,133,106,0.3); }
+    .btn-secondary { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); color: var(--off-white); padding: 16px 36px; border-radius: 12px; font-size: 17px; font-weight: 600; text-decoration: none; transition: all 0.2s; }
+    .btn-secondary:hover { background: rgba(255,255,255,0.1); }
+    .hero-note { font-size: 13px; color: var(--dim); margin-top: 20px; }
+
+    /* SOCIAL PROOF BAR */
+    .proof { padding: 24px 40px; text-align: center; border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); }
+    .proof p { font-size: 14px; color: var(--dim); letter-spacing: 0.5px; }
+    .proof span { color: var(--coral); font-weight: 700; }
+
+    /* SECTION */
+    section { padding: 100px 40px; }
+    .container { max-width: 1100px; margin: 0 auto; }
+    .section-label { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--coral); font-weight: 700; margin-bottom: 10px; }
+    .section-title { font-size: clamp(28px, 4vw, 44px); font-weight: 800; letter-spacing: -1.5px; margin-bottom: 20px; line-height: 1.15; }
+    .section-sub { font-size: 18px; color: var(--dim); max-width: 600px; margin-bottom: 48px; }
+
+    /* PROBLEM SECTION */
+    .problem-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .problem-card { background: var(--slate-dark); border: 1px solid var(--rule); border-radius: 16px; padding: 32px; }
+    .problem-card .emoji { font-size: 36px; margin-bottom: 16px; }
+    .problem-card h3 { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+    .problem-card p { font-size: 14px; color: var(--dim); }
+
+    /* HOW IT WORKS */
+    .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; margin-top: 48px; }
+    .step { background: var(--slate-dark); padding: 40px 32px; text-align: center; position: relative; }
+    .step:first-child { border-radius: 16px 0 0 16px; }
+    .step:last-child { border-radius: 0 16px 16px 0; }
+    .step-number { display: inline-flex; align-items: center; justify-content: center; width: 48px; height: 48px; border-radius: 50%; background: var(--coral); color: #fff; font-size: 20px; font-weight: 800; margin-bottom: 20px; }
+    .step h3 { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+    .step p { font-size: 14px; color: var(--dim); }
+    .step-arrow { position: absolute; right: -14px; top: 50%; transform: translateY(-50%); font-size: 24px; color: var(--coral); z-index: 2; }
+
+    /* FEATURES */
+    .features-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+    .feature { background: var(--slate-dark); border: 1px solid var(--rule); border-radius: 14px; padding: 28px; display: flex; gap: 16px; transition: border-color 0.2s; }
+    .feature:hover { border-color: rgba(232,133,106,0.3); }
+    .feature .icon { font-size: 28px; flex-shrink: 0; }
+    .feature h4 { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+    .feature p { font-size: 14px; color: var(--dim); margin: 0; }
+
+    /* MAC + IPHONE DIAGRAM */
+    .arch-box { background: var(--slate-dark); border: 1px solid var(--rule); border-radius: 20px; padding: 48px; text-align: center; margin-bottom: 48px; }
+    .arch-flow { display: flex; align-items: center; justify-content: center; gap: 40px; }
+    .arch-device { text-align: center; }
+    .arch-device .device-icon { font-size: 56px; margin-bottom: 12px; }
+    .arch-device h3 { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+    .arch-device p { font-size: 13px; color: var(--dim); max-width: 180px; margin: 0 auto; }
+    .arch-arrow { font-size: 32px; color: var(--coral); }
+    .arch-device .price-tag { display: inline-block; background: var(--coral); color: #fff; padding: 4px 12px; border-radius: 6px; font-size: 12px; font-weight: 700; margin-top: 8px; }
+    .arch-device .free-tag { display: inline-block; background: rgba(255,255,255,0.08); color: var(--dim); padding: 4px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; margin-top: 8px; }
+
+    /* EMOTIONAL SECTION */
+    .emotional { background: var(--slate-dark); border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); }
+    .emotional .container { text-align: center; max-width: 700px; }
+    .emotional blockquote { font-size: clamp(22px, 3vw, 32px); font-weight: 700; line-height: 1.4; letter-spacing: -0.5px; font-style: italic; margin-bottom: 20px; }
+    .emotional blockquote .coral { color: var(--coral); }
+    .emotional .attrib { font-size: 14px; color: var(--dim); }
+
+    /* PRICING */
+    .pricing-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; max-width: 900px; margin: 0 auto; }
+    .price-card { background: var(--slate-dark); border: 1px solid var(--rule); border-radius: 18px; padding: 36px 28px; text-align: center; position: relative; }
+    .price-card.featured { border-color: var(--coral); transform: scale(1.03); }
+    .price-card.featured::before { content: "MOST POPULAR"; position: absolute; top: -14px; left: 50%; transform: translateX(-50%); background: var(--coral); color: #fff; font-size: 10px; font-weight: 800; letter-spacing: 1.5px; padding: 5px 16px; border-radius: 20px; }
+    .price-card .tier { font-size: 12px; color: var(--dim); font-weight: 600; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 12px; }
+    .price-card .amount { font-size: 48px; font-weight: 800; letter-spacing: -2px; margin-bottom: 4px; }
+    .price-card .amount span { font-size: 16px; color: var(--dim); font-weight: 400; }
+    .price-card .desc { font-size: 13px; color: var(--dim); margin-bottom: 24px; }
+    .price-card ul { list-style: none; text-align: left; margin-bottom: 24px; }
+    .price-card ul li { font-size: 14px; color: var(--dim); padding: 6px 0; display: flex; gap: 10px; }
+    .price-card ul li::before { content: "✓"; color: var(--coral); font-weight: 700; }
+    .price-card .buy-btn { display: block; width: 100%; padding: 14px; border-radius: 10px; font-size: 15px; font-weight: 700; text-decoration: none; text-align: center; border: none; cursor: pointer; transition: all 0.2s; }
+    .price-card .buy-btn.coral { background: var(--coral); color: #fff; }
+    .price-card .buy-btn.coral:hover { box-shadow: 0 8px 30px rgba(232,133,106,0.3); }
+    .price-card .buy-btn.outline { background: transparent; border: 1px solid rgba(255,255,255,0.15); color: var(--off-white); }
+    .price-card .buy-btn.outline:hover { background: rgba(255,255,255,0.05); }
+
+    /* FAQ */
+    .faq-list { max-width: 700px; margin: 0 auto; }
+    .faq-item { border-bottom: 1px solid var(--rule); padding: 24px 0; }
+    .faq-item h4 { font-size: 16px; font-weight: 700; margin-bottom: 8px; cursor: pointer; }
+    .faq-item p { font-size: 14px; color: var(--dim); }
+
+    /* FINAL CTA */
+    .final-cta { text-align: center; padding: 120px 40px; position: relative; }
+    .final-cta::before { content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 600px; height: 600px; background: radial-gradient(circle, rgba(232,133,106,0.06) 0%, transparent 70%); pointer-events: none; }
+    .final-cta h2 { font-size: clamp(32px, 5vw, 56px); font-weight: 800; letter-spacing: -2px; margin-bottom: 16px; line-height: 1.1; }
+    .final-cta .sub { font-size: 18px; color: var(--dim); max-width: 500px; margin: 0 auto 40px; }
+
+    /* FOOTER */
+    footer { padding: 40px; text-align: center; border-top: 1px solid var(--rule); }
+    footer p { font-size: 12px; color: var(--dim); }
+    footer a { color: var(--coral); text-decoration: none; }
+
+    /* ANIMATED HERO WAVEFORM */
+    .hero-waveform { display: flex; gap: 6px; align-items: center; justify-content: center; margin-bottom: 8px; }
+    .hero-waveform .bar { width: 6px; border-radius: 3px; background: var(--coral); animation: pulse 1.2s ease-in-out infinite; }
+    .hero-waveform .bar:nth-child(1) { height: 16px; opacity: 0.4; animation-delay: 0s; }
+    .hero-waveform .bar:nth-child(2) { height: 28px; opacity: 0.6; animation-delay: 0.1s; }
+    .hero-waveform .bar:nth-child(3) { height: 44px; opacity: 0.8; animation-delay: 0.2s; }
+    .hero-waveform .bar:nth-child(4) { height: 56px; opacity: 1; animation-delay: 0.3s; }
+    .hero-waveform .bar:nth-child(5) { height: 44px; opacity: 0.8; animation-delay: 0.4s; }
+    .hero-waveform .bar:nth-child(6) { height: 28px; opacity: 0.6; animation-delay: 0.5s; }
+    .hero-waveform .bar:nth-child(7) { height: 16px; opacity: 0.4; animation-delay: 0.6s; }
+    @keyframes pulse {
+      0%, 100% { transform: scaleY(0.6); }
+      50% { transform: scaleY(1); }
+    }
+
+    /* MOBILE */
+    @media (max-width: 768px) {
+      nav { padding: 12px 20px; }
+      nav .nav-links a:not(.cta-btn) { display: none; }
+      section { padding: 60px 20px; }
+      .problem-grid, .steps, .features-grid, .pricing-cards { grid-template-columns: 1fr; }
+      .step { border-radius: 12px !important; }
+      .step-arrow { display: none; }
+      .arch-flow { flex-direction: column; }
+      .arch-arrow { transform: rotate(90deg); }
+      .price-card.featured { transform: scale(1); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="logo">Voice<span>Vault</span></div>
+    <div class="nav-links">
+      <a href="#how">How It Works</a>
+      <a href="#features">Features</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#pricing" class="cta-btn">Download</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-waveform">
+      <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
+    </div>
+    <span class="hero-badge">🎙️ For Mac + iPhone</span>
+    <h1>Your mom left you<br>a voicemail.<br><span class="coral">Don't lose it.</span></h1>
+    <p class="sub">One click saves every voicemail on your iPhone — organized by person, transcribed, and yours forever. No subscription. No cloud dependency. Just your voices, safe.</p>
+    <div class="buttons">
+      <a href="#pricing" class="btn-primary">🖥 Download for Mac — $29.99</a>
+      <a href="#how" class="btn-secondary">See How It Works</a>
+    </div>
+    <p class="hero-note">macOS 14+ · Works with any iPhone backup · No subscription required</p>
+  </section>
+
+  <!-- SOCIAL PROOF -->
+  <div class="proof">
+    <p>Over <span>40% of iPhone users</span> have lost important voicemails. Most don't realize it until it's too late.</p>
+  </div>
+
+  <!-- PROBLEM -->
+  <section id="problem">
+    <div class="container">
+      <div class="section-label">The Problem</div>
+      <div class="section-title">Voicemails are the most fragile<br>memories you own</div>
+      <p class="section-sub">Switch carriers, drop your phone, update iOS wrong — and they're gone. No warning. No recovery.</p>
+
+      <div class="problem-grid">
+        <div class="problem-card">
+          <div class="emoji">📱</div>
+          <h3>Tied to your carrier</h3>
+          <p>Switch phones or carriers and your voicemails don't come with you. They're stored on carrier servers with expiration dates you never see.</p>
+        </div>
+        <div class="problem-card">
+          <div class="emoji">⚡</div>
+          <h3>One update away from gone</h3>
+          <p>iOS updates have wiped voicemails without warning. Apple support forums are full of people who lost everything overnight.</p>
+        </div>
+        <div class="problem-card">
+          <div class="emoji">😔</div>
+          <h3>You only realize too late</h3>
+          <p>Nobody thinks about saving voicemails until they lose someone. By then, the messages may already be gone.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section id="how" style="background: var(--slate-dark); border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule);">
+    <div class="container">
+      <div class="section-label">How It Works</div>
+      <div class="section-title">Three steps. Every voicemail. Forever.</div>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-number">1</div>
+          <h3>Connect your iPhone</h3>
+          <p>Plug into your Mac with the cable you already have. VoiceVault reads your iPhone backup automatically.</p>
+          <span class="step-arrow">→</span>
+        </div>
+        <div class="step">
+          <div class="step-number">2</div>
+          <h3>One click to scan</h3>
+          <p>VoiceVault finds every voicemail, matches them to your contacts, and transcribes each one. Seconds, not hours.</p>
+          <span class="step-arrow">→</span>
+        </div>
+        <div class="step">
+          <div class="step-number">3</div>
+          <h3>Your vault, forever</h3>
+          <p>Organized by person. Searchable transcripts. Export anytime. Syncs to the free iPhone app so your vault goes everywhere.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EMOTIONAL BREAK -->
+  <section class="emotional">
+    <div class="container">
+      <blockquote>"Your phone will break. Your carrier will change. <span class="coral">What are you doing with your dad's voicemails?</span>"</blockquote>
+      <p class="attrib">The average person has 3–5 voicemails they'd be devastated to lose. Most have never saved a single one.</p>
+    </div>
+  </section>
+
+  <!-- MAC + IPHONE -->
+  <section>
+    <div class="container">
+      <div class="section-label">Two Apps, One Vault</div>
+      <div class="section-title">Mac extracts. iPhone carries.</div>
+      <p class="section-sub">The Mac app does the heavy lifting. The iPhone app keeps your vault in your pocket.</p>
+
+      <div class="arch-box">
+        <div class="arch-flow">
+          <div class="arch-device">
+            <div class="device-icon">💻</div>
+            <h3>VoiceVault for Mac</h3>
+            <p>Reads iPhone backup. Extracts all voicemails. Organizes. Transcribes.</p>
+            <span class="price-tag">$29.99 one-time</span>
+          </div>
+          <div class="arch-arrow">→</div>
+          <div class="arch-device">
+            <div class="device-icon">☁️</div>
+            <h3>iCloud Sync</h3>
+            <p>Your vault syncs automatically. No server. No account. Just iCloud.</p>
+          </div>
+          <div class="arch-arrow">→</div>
+          <div class="arch-device">
+            <div class="device-icon">📱</div>
+            <h3>VoiceVault for iPhone</h3>
+            <p>Play, search, add notes. Save new voicemails going forward.</p>
+            <span class="free-tag">Free</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section id="features" style="background: var(--slate-dark); border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule);">
+    <div class="container">
+      <div class="section-label">Features</div>
+      <div class="section-title">Everything your voicemails deserve</div>
+      <p class="section-sub">Built for people who care about preserving voices, not for IT professionals.</p>
+
+      <div class="features-grid">
+        <div class="feature"><div class="icon">⚡</div><div><h4>One-Click Extract</h4><p>Reads your iPhone backup and pulls every voicemail in seconds. No full backup needed — just the voicemail database.</p></div></div>
+        <div class="feature"><div class="icon">👤</div><div><h4>Organized by Person</h4><p>Automatically matches phone numbers to your contacts. Photos, names, relationships — a vault for each person you love.</p></div></div>
+        <div class="feature"><div class="icon">✍️</div><div><h4>Auto-Transcription</h4><p>Every voicemail transcribed on your device. Private. No cloud. Search "I love you" across all of Mom's messages.</p></div></div>
+        <div class="feature"><div class="icon">🔍</div><div><h4>Full-Text Search</h4><p>Find any word across every transcript, every person, every voicemail. Instantly.</p></div></div>
+        <div class="feature"><div class="icon">📖</div><div><h4>Memory Notes</h4><p>Add context to any voicemail. What was happening that day. Why it matters. What you remember.</p></div></div>
+        <div class="feature"><div class="icon">📤</div><div><h4>Export Anywhere</h4><p>Export any person's vault as .m4a audio + .txt transcripts. Standard files. No lock-in. Yours forever.</p></div></div>
+        <div class="feature"><div class="icon">🔒</div><div><h4>Completely Private</h4><p>Everything runs on your Mac. No servers. No accounts. No data leaves your computer. Ever.</p></div></div>
+        <div class="feature"><div class="icon">🔄</div><div><h4>Save New Going Forward</h4><p>After the bulk import, save new voicemails one at a time from your iPhone via the free companion app.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- VS IMAZING -->
+  <section>
+    <div class="container">
+      <div class="section-label">Why VoiceVault</div>
+      <div class="section-title">Built for voicemails. Not for IT departments.</div>
+      <p class="section-sub">iMazing is a Swiss Army knife. VoiceVault is a purpose-built vault for the voices that matter most.</p>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2px; border-radius: 16px; overflow: hidden; margin-top: 40px;">
+        <div style="background: var(--slate-dark); padding: 32px;">
+          <div style="font-size: 13px; color: var(--dim); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 16px;">Other tools</div>
+          <ul style="list-style: none;">
+            <li style="font-size: 15px; color: var(--dim); padding: 8px 0; display: flex; gap: 10px; border-bottom: 1px solid var(--rule);"><span style="color: #E86450;">✗</span> Buried voicemail feature in a complex tool</li>
+            <li style="font-size: 15px; color: var(--dim); padding: 8px 0; display: flex; gap: 10px; border-bottom: 1px solid var(--rule);"><span style="color: #E86450;">✗</span> Dumps raw files — no organization</li>
+            <li style="font-size: 15px; color: var(--dim); padding: 8px 0; display: flex; gap: 10px; border-bottom: 1px solid var(--rule);"><span style="color: #E86450;">✗</span> No transcription</li>
+            <li style="font-size: 15px; color: var(--dim); padding: 8px 0; display: flex; gap: 10px; border-bottom: 1px solid var(--rule);"><span style="color: #E86450;">✗</span> Full device backup required (hours)</li>
+            <li style="font-size: 15px; color: var(--dim); padding: 8px 0; display: flex; gap: 10px;"><span style="color: #E86450;">✗</span> Designed for tech-savvy users</li>
+          </ul>
+        </div>
+        <div style="background: var(--slate-dark); padding: 32px; border-left: 2px solid var(--coral);">
+          <div style="font-size: 13px; color: var(--coral); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 16px; font-weight: 700;">VoiceVault</div>
+          <ul style="list-style: none;">
+            <li style="font-size: 15px; color: var(--off-white); padding: 8px 0; display: flex; gap: 10px; border-bottom: 1px solid var(--rule);"><span style="color: var(--coral);">✓</span> Purpose-built for voicemails only</li>
+            <li style="font-size: 15px; color: var(--off-white); padding: 8px 0; display: flex; gap: 10px; border-bottom: 1px solid var(--rule);"><span style="color: var(--coral);">✓</span> Organized by person with photos</li>
+            <li style="font-size: 15px; color: var(--off-white); padding: 8px 0; display: flex; gap: 10px; border-bottom: 1px solid var(--rule);"><span style="color: var(--coral);">✓</span> Every voicemail auto-transcribed</li>
+            <li style="font-size: 15px; color: var(--off-white); padding: 8px 0; display: flex; gap: 10px; border-bottom: 1px solid var(--rule);"><span style="color: var(--coral);">✓</span> Reads existing backup — no extra wait</li>
+            <li style="font-size: 15px; color: var(--off-white); padding: 8px 0; display: flex; gap: 10px;"><span style="color: var(--coral);">✓</span> Built for regular people, not IT pros</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRICING -->
+  <section id="pricing">
+    <div class="container" style="text-align: center;">
+      <div class="section-label">Pricing</div>
+      <div class="section-title">No subscription. No hidden costs.<br>One purchase. Yours forever.</div>
+      <p class="section-sub" style="margin-left: auto; margin-right: auto;">What would you pay to keep your mom's voice forever? That's a different price conversation.</p>
+
+      <div class="pricing-cards" style="margin-top: 48px;">
+        <div class="price-card">
+          <div class="tier">iPhone Companion</div>
+          <div class="amount">Free</div>
+          <div class="desc">View your vault on the go</div>
+          <ul>
+            <li>Play & search voicemails</li>
+            <li>Read all transcripts</li>
+            <li>Add memory notes</li>
+            <li>Save new voicemails (1 at a time)</li>
+            <li>iCloud sync from Mac</li>
+          </ul>
+          <a href="#" class="buy-btn outline">Download on App Store</a>
+        </div>
+
+        <div class="price-card featured">
+          <div class="tier">VoiceVault for Mac</div>
+          <div class="amount">$29<span>.99</span></div>
+          <div class="desc">One-time purchase. No subscription.</div>
+          <ul>
+            <li>Extract ALL voicemails in one click</li>
+            <li>Auto-organize by contact</li>
+            <li>Full transcription</li>
+            <li>Search across everything</li>
+            <li>Export to .m4a + .txt</li>
+            <li>iCloud sync to iPhone</li>
+            <li>Free updates forever</li>
+          </ul>
+          <a href="#" class="buy-btn coral">Download for Mac — $29.99</a>
+        </div>
+
+        <div class="price-card">
+          <div class="tier">Family Pack</div>
+          <div class="amount">$49<span>.99</span></div>
+          <div class="desc">For the whole family</div>
+          <ul>
+            <li>Everything in VoiceVault</li>
+            <li>Up to 5 Macs</li>
+            <li>Each family member's vault</li>
+            <li>Perfect for siblings preserving parents' voices together</li>
+          </ul>
+          <a href="#" class="buy-btn outline">Get Family Pack</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section style="background: var(--slate-dark); border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule);">
+    <div class="container">
+      <div class="section-label">FAQ</div>
+      <div class="section-title" style="margin-bottom: 40px;">Questions & answers</div>
+
+      <div class="faq-list">
+        <div class="faq-item">
+          <h4>How does VoiceVault access my voicemails?</h4>
+          <p>VoiceVault reads your iPhone backup (the same backup Finder creates when you plug in your phone). Your voicemails are stored in that backup file. We extract and organize them — no jailbreak, no hacking, no special access needed.</p>
+        </div>
+        <div class="faq-item">
+          <h4>Do I need to create a backup first?</h4>
+          <p>If you've ever plugged your iPhone into your Mac, you probably already have one. VoiceVault auto-detects existing backups. If you don't have one, just plug in your iPhone and back up via Finder — takes a few minutes.</p>
+        </div>
+        <div class="faq-item">
+          <h4>Is my data private?</h4>
+          <p>100%. Everything runs on your Mac. No servers, no accounts, no data uploads. Your voicemails never leave your computer. Transcription runs on-device using Apple's Speech framework.</p>
+        </div>
+        <div class="faq-item">
+          <h4>Does it work with encrypted backups?</h4>
+          <p>Currently VoiceVault works with unencrypted backups. If your backup is encrypted, you'll need to create an unencrypted one via Finder (uncheck "Encrypt local backup"). We're working on encrypted backup support.</p>
+        </div>
+        <div class="faq-item">
+          <h4>What format are the voicemails saved in?</h4>
+          <p>Standard audio files (.m4a) plus text transcripts (.txt). You can export them anytime. No proprietary formats, no lock-in.</p>
+        </div>
+        <div class="faq-item">
+          <h4>Is there a subscription?</h4>
+          <p>No. One purchase, yours forever. Free updates included. We believe the voices of your loved ones shouldn't come with a monthly bill.</p>
+        </div>
+        <div class="faq-item">
+          <h4>What about new voicemails after the initial import?</h4>
+          <p>Two options: plug into your Mac again and VoiceVault will pick up any new ones, or use the free iPhone companion app to save individual voicemails as they come in.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FINAL CTA -->
+  <section class="final-cta">
+    <h2>Before the silence,<br>there's <span style="color: var(--coral);">VoiceVault</span>.</h2>
+    <p class="sub">The people you love won't always be a phone call away. But their voice can be.</p>
+    <a href="#pricing" class="btn-primary" style="font-size: 19px; padding: 18px 44px;">Download VoiceVault — $29.99</a>
+    <p class="hero-note" style="margin-top: 16px;">One-time purchase · macOS 14+ · No subscription</p>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>© 2026 Power On Media Group · <a href="privacy.html">Privacy Policy</a> · <a href="mailto:support@poweronmediagroup.com">Contact</a></p>
+  </footer>
+
+  <script>
+    // Scroll reveal
+    const reveals = document.querySelectorAll('.section-label, .section-title, .section-sub, .problem-card, .step, .feature, .price-card, .faq-item, .arch-box');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => {
+            entry.target.style.opacity = '1';
+            entry.target.style.transform = 'translateY(0)';
+          }, i * 80);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+    reveals.forEach(el => {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(24px)';
+      el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+      observer.observe(el);
+    });
+
+    // Smooth nav background on scroll
+    const nav = document.querySelector('nav');
+    window.addEventListener('scroll', () => {
+      nav.style.background = window.scrollY > 50 
+        ? 'rgba(30,45,61,0.95)' 
+        : 'rgba(30,45,61,0.85)';
+    });
+  </script>
+
+</body>
+</html>
+
